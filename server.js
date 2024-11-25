@@ -33,16 +33,18 @@ app.post('/form-webhook', async (req, res) => {
 
         const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
         
-        // Format the current date
+        // Format the current date in Nashville time
         const date = new Date();
-        const formattedDate = date.toLocaleDateString('en-US', {
+        const formattedDate = new Intl.DateTimeFormat('en-US', {
             weekday: 'long',
             year: 'numeric',
             month: 'long',
             day: 'numeric',
             hour: '2-digit',
-            minute: '2-digit'
-        });
+            minute: '2-digit',
+            timeZone: 'America/Chicago', // Nashville is in Central Time
+            timeZoneName: 'short'
+        }).format(date);
 
         const sendSmtpEmail = {
             to: [{
