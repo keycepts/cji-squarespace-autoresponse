@@ -35,13 +35,19 @@ app.post('/form-webhook', async (req, res) => {
         sendSmtpEmail.subject = "Thank you for contacting us";
         sendSmtpEmail.htmlContent = `
             <html>
-                <body>
-                    <h1>Thank you for reaching out!</h1>
+                <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+                    <h1 style="color: #2c5282;">Thank you for contacting us!</h1>
+                    <p>Dear ${formData.firstName},</p>
                     <p>We have received your message and will get back to you shortly.</p>
-                    <p>Your submitted information:</p>
-                    <p>Name: ${formData.name}</p>
-                    <p>Email: ${formData.email}</p>
-                    <p>Message: ${formData.message}</p>
+                    <p>Here's a summary of your submission:</p>
+                    <div style="background-color: #f7fafc; padding: 15px; border-radius: 5px;">
+                        <p><strong>Name:</strong> ${formData.firstName} ${formData.lastName}</p>
+                        <p><strong>Email:</strong> ${formData.email}</p>
+                        <p><strong>Subject:</strong> ${formData.subject}</p>
+                        <p><strong>Message:</strong> ${formData.message}</p>
+                    </div>
+                    <p>We strive to respond to all inquiries within 24-48 business hours.</p>
+                    <p>Best regards,<br>Your Company Name</p>
                 </body>
             </html>
         `;
@@ -49,7 +55,7 @@ app.post('/form-webhook', async (req, res) => {
             "name": process.env.SENDER_NAME || "Your Company",
             "email": process.env.SENDER_EMAIL || "your@company.com"
         };
-        sendSmtpEmail.to = [{"email": formData.email, "name": formData.name}];
+        sendSmtpEmail.to = [{"email": formData.email, "name": `${formData.firstName} ${formData.lastName}`}];
         
         // Send the auto-response email
         const response = await apiInstance.sendTransacEmail(sendSmtpEmail);
